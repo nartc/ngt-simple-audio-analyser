@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { extend, NgtArgs } from 'angular-three';
 import { Mesh, PlaneGeometry, ShadowMaterial, SpotLight, Vector2 } from 'three';
+import { tracks, zoomIndex } from '../tracks';
 import { Track } from './track.component';
 import { Zoom } from './zoom.directive';
 
@@ -11,9 +12,9 @@ import { Zoom } from './zoom.directive';
       <ngt-vector2 *args="[2048, 2048]" attach="shadow.mapSize" />
     </ngt-spot-light>
 
-    <app-track sound="synth" [position]="[0, 0, -0.25]" />
-    <app-track zoom sound="snare" [position]="[0, 0, 0]" />
-    <app-track sound="drums" [position]="[0, 0, 0.25]" />
+    @for (track of tracks; track track.sound) {
+      <app-track [sound]="track.sound" [position]="[0, 0, track.positionZ]" [zoom]="zoomIndex() === $index" />
+    }
 
     <ngt-mesh [receiveShadow]="true" [rotation]="[-Math.PI / 2, 0, 0]" [position]="[0, -0.025, 0]">
       <ngt-plane-geometry />
@@ -26,6 +27,9 @@ import { Zoom } from './zoom.directive';
 })
 export class Experience {
   protected readonly Math = Math;
+
+  protected readonly tracks = tracks;
+  protected readonly zoomIndex = zoomIndex;
 
   constructor() {
     extend({ SpotLight, Vector2, Mesh, PlaneGeometry, ShadowMaterial });

@@ -1,4 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { tracks } from './tracks';
 
 declare global {
   interface Window {
@@ -22,9 +23,9 @@ export class AudioStore {
   });
 
   constructor() {
-    this.createAudio('./drum-final.mp3').then(this.drums.set.bind(this.drums));
-    this.createAudio('./synth-final.mp3').then(this.synth.set.bind(this.synth));
-    this.createAudio('./snare-final.mp3').then(this.snare.set.bind(this.snare));
+    void Promise.all(
+      tracks.map(({ sound }) => this.createAudio(`./${sound}-final.mp3`).then(this[sound].set.bind(this[sound]))),
+    );
   }
 
   start() {

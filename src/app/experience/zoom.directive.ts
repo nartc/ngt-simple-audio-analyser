@@ -1,14 +1,19 @@
-import { Directive, inject } from '@angular/core';
+import { Directive, inject, input } from '@angular/core';
 import { injectBeforeRender } from 'angular-three';
 import { PerspectiveCamera } from 'three';
 import { Track } from './track.component';
 
 @Directive({ standalone: true, selector: 'app-track[zoom]' })
 export class Zoom {
+  enabled = input(false, { alias: 'zoom' });
+
   track = inject(Track);
 
   constructor() {
     injectBeforeRender(({ camera }) => {
+      const enabled = this.enabled();
+      if (!enabled) return;
+
       const audio = this.track.audio();
       if (!audio) return;
 

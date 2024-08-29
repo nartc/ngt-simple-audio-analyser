@@ -10,25 +10,31 @@ import {
   viewChild,
 } from '@angular/core';
 import { extend, injectBeforeRender, NgtArgs } from 'angular-three';
-import { InstancedMesh, MeshBasicMaterial, Object3D, PlaneGeometry } from 'three';
+import { NgtsText } from 'angular-three-soba/abstractions';
+import { NgtsPivotControls } from 'angular-three-soba/controls';
+import { Group, InstancedMesh, MeshBasicMaterial, Object3D, PlaneGeometry } from 'three';
 import { AudioStore } from '../audio.store';
 
 @Component({
   selector: 'app-track',
   standalone: true,
   template: `
-    <ngt-instanced-mesh #instanced *args="[undefined, undefined, length()]" [castShadow]="true" [position]="position()">
-      <ngt-plane-geometry *args="[0.01, 0.05]" />
-      <ngt-mesh-basic-material [toneMapped]="false" />
-    </ngt-instanced-mesh>
+    <ngt-group [position]="position()">
+      <ngt-instanced-mesh #instanced *args="[undefined, undefined, length()]" [castShadow]="true">
+        <ngt-plane-geometry *args="[0.01, 0.05]" />
+        <ngt-mesh-basic-material [toneMapped]="false" />
+      </ngt-instanced-mesh>
+
+      <ngts-text [text]="sound()" [options]="{ fontSize: 0.05, color: 'black', position: [0.375, 0, 0] }" />
+    </ngt-group>
   `,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgtArgs],
+  imports: [NgtArgs, NgtsText, NgtsPivotControls],
 })
 export class Track {
   sound = input.required<'drums' | 'synth' | 'snare'>();
-  position = input([0, 0, 0]);
+  position = input<[number, number, number]>([0, 0, 0]);
 
   private instancedRef = viewChild<ElementRef<InstancedMesh<PlaneGeometry, MeshBasicMaterial>>>('instanced');
 
@@ -40,7 +46,7 @@ export class Track {
   });
 
   constructor() {
-    extend({ InstancedMesh, PlaneGeometry, MeshBasicMaterial });
+    extend({ InstancedMesh, PlaneGeometry, MeshBasicMaterial, Group });
 
     effect((onCleanup) => {
       const audio = this.audio();

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AudioStore } from '../audio.store';
+import { tracks, zoomIndex, zoomTrack } from '../tracks';
 
 @Component({
   selector: 'app-overlay',
@@ -23,23 +24,46 @@ import { AudioStore } from '../audio.store';
         <span>loading</span>
       }
     </div>
-    <code class="absolute bottom-0 right-0 text-white opacity-0" [class.opacity-100]="audioStore.clicked()">
-      Triplet After Triplet · SEGA · Hidenori Shoji
-    </code>
+    <div
+      class="absolute bottom-2 left-0 flex w-full items-center justify-between px-2 opacity-0"
+      [class.opacity-100]="audioStore.clicked()"
+    >
+      <code class="text-white">
+        Camera currently reacts to:
+        <button
+          class="rounded border border-b-4 border-transparent border-b-gray-400 bg-white px-4 py-1 text-black"
+          (click)="onChangeZoomTrack()"
+        >
+          {{ zoomTrack() }}
+        </button>
+      </code>
+      <code class="text-white">Triplet After Triplet · SEGA · Hidenori Shoji</code>
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: `
-    :host > div {
+    :host > div:first-child {
       background: linear-gradient(15deg, rgb(82, 81, 88) 0%, rgb(255, 247, 248) 100%);
     }
   `,
 })
 export class Overlay {
   protected audioStore = inject(AudioStore);
+  protected readonly zoomTrack = zoomTrack;
 
   onClick() {
     if (this.audioStore.loaded()) {
       this.audioStore.start();
     }
+  }
+
+  onChangeZoomTrack() {
+    zoomIndex.update((current) => {
+      let nextRandom = Math.floor(Math.random() * tracks.length);
+      while (nextRandom === current) {
+        nextRandom = Math.floor(Math.random() * tracks.length);
+      }
+      return nextRandom;
+    });
   }
 }
