@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
 import { NgtCanvas } from 'angular-three';
 import { Experience } from './experience/experience.component';
+import { Overlay } from './experience/overlay.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   template: `
-    <ngt-canvas [sceneGraph]="sceneGraph" />
+    <div class="h-screen">
+      <ngt-canvas [sceneGraph]="sceneGraph" [shadows]="true" [camera]="{ position: [-1, 1.5, 2], fov: 25 }" />
+    </div>
+    <app-overlay />
   `,
-  host: { class: 'block h-dvh w-full' },
-  imports: [NgtCanvas],
+  imports: [NgtCanvas, Overlay],
 })
 export class AppComponent {
   sceneGraph = Experience;
