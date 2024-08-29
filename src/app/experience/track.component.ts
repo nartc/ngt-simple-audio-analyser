@@ -56,7 +56,7 @@ export class Track {
       onCleanup(() => gainNode.disconnect());
     });
 
-    const obj = new Object3D();
+    const dummy = new Object3D();
     injectBeforeRender(() => {
       const instanced = this.instancedRef()?.nativeElement;
       if (!instanced) return;
@@ -69,9 +69,9 @@ export class Track {
 
       // Distribute the instanced planes according to the frequency data
       for (let i = 0; i < data.length; i++) {
-        obj.position.set(i * 0.01 * 1.8 - (data.length * 0.01 * 1.8) / 2, data[i] / 2500, 0);
-        obj.updateMatrix();
-        instanced.setMatrixAt(i, obj.matrix);
+        dummy.position.set(i * 0.01 * 1.8 - (data.length * 0.01 * 1.8) / 2, data[i] / 2500, 0);
+        dummy.updateMatrix();
+        instanced.setMatrixAt(i, dummy.matrix);
       }
       // Set the hue according to the frequency average
       instanced.material.color.setHSL(avg / 500, 0.75, 0.75);

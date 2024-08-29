@@ -14,6 +14,7 @@ import { tracks, zoomIndex, zoomTrack } from '../tracks';
       @if (audioStore.loaded()) {
         <span>This sandbox needs</span>
         <span>user interaction for audio</span>
+        <strong>(loud audio warning!!!!!)</strong>
         <button
           class="cursor-pointer self-center rounded border border-b-4 border-transparent border-b-gray-400 bg-white px-10 py-2"
           (click)="onClick()"
